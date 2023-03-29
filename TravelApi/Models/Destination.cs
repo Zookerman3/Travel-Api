@@ -12,5 +12,7 @@ namespace TravelApi.Models
         public string Country { get; set; }
         [Required]
         public string City { get; set; }
+
+        public virtual List<Review> Reviews { get; set; }
     }
 }

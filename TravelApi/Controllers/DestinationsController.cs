@@ -17,10 +17,9 @@ namespace TravelApi.Controllers
 
         // GET api/destinations
         [HttpGet]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Destination>>> Get(string country, string city)
+        public async Task<ActionResult<IEnumerable<Destination>>> Get(string country, string city, int rating)
         {
-            IQueryable<Destination> query = _db.Destinations.AsQueryable();
+            IQueryable<Destination> query = _db.Destinations.Include(destination => destination.Reviews).AsQueryable();
 
             if (country != null)
             {
@@ -32,21 +31,33 @@ namespace TravelApi.Controllers
                 query = query.Where(entry => entry.City == city);
             }
 
-            return await query.ToListAsync();
+            if (rating >= 1 && rating <= 5)
+            {
+                
+            }
+
+
+
+            var destinations = await query.ToListAsync();
+
+            return destinations;
         }
 
         // GET: api/Animals/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Destination>> GetDestination(int id)
         {
-            Destination destination = await _db.Destinations.FindAsync(id);
+            IQueryable<Destination> query = _db.Destinations.Include(destination => destination.Reviews).AsQueryable();
 
-            if (destination == null)
+            var dest = await query.FirstOrDefaultAsync(destination => destination.DestinationId == id);
+
+            if (dest == null)
             {
                 return NotFound();
             }
-            return destination;
+            return dest;
         }
+
         // POST api/animals
         [HttpPost]
         public async Task<ActionResult<Destination>> Post(Destination destination)
