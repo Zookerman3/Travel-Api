@@ -39,7 +39,7 @@ namespace TravelApi.Models
                         .HasKey(u =>u.UserId);
             builder.Entity<User>()
                         .HasData(
-                    new User { UserId = "admin", Name = "Joe", Password = "password" });
+                    new User { UserId = "admin1", Name = "JoeMama", Password = "password1" });
         }
     }
 }
