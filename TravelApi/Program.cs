@@ -16,6 +16,9 @@ builder.Services.AddDbContext<TravelApiContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var _jwtsettings = builder.Configuration.GetSection("JwtSettings");
+builder.Services.Configure<JwtSettings>(_jwtsettings);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
