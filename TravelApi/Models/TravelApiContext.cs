@@ -35,9 +35,11 @@ namespace TravelApi.Models
                 new Review { ReviewId = 5, DestinationId = 5, Title = "Australia Review", Description = "Words Would go here", Rating = 5 }
         );
 
-            // builder.Entity<User>()
-            //             .HasData(
-            //         new User { UserId = "", Name = "Joe", Password = "password" });
+            builder.Entity<User>()
+                        .HasKey(u =>u.UserId);
+            builder.Entity<User>()
+                        .HasData(
+                    new User { UserId = "admin", Name = "Joe", Password = "password" });
         }
     }
 }

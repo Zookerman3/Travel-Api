@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace TravelApi.Controllers
 {
@@ -23,13 +24,13 @@ namespace TravelApi.Controllers
 
         public UserController(TravelApiContext db, IOptions<JwtSettings> options)
         {
-            _db = db;
-            jwtSettings = options.Value;
+            this._db = db;
+            this.jwtSettings = options.Value;
         }
 
 
         [HttpPost("Authenticate")]
-        public async Task<IActionResult> Authenicate([FromBody] UserCred userCred)
+        public async Task<IActionResult> Authenticate([FromBody] UserCred userCred)
         {
             var user = await _db.Users.FirstOrDefaultAsync(item => item.UserId == userCred.username && item.Password == userCred.password);
 
@@ -38,12 +39,13 @@ namespace TravelApi.Controllers
 
             //generate token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenKey = Encoding.UTF8.GetBytes(jwtSettings.securitykey);
+            var tokenKey = Encoding.UTF8.GetBytes(this.jwtSettings.securitykey);
             var tokenDesc = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(
                     new Claim[] { new Claim(ClaimTypes.Name, user.UserId) }),
-                Expires = DateTime.Now.AddMinutes(20),
+                    NotBefore = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddMinutes(20),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256)
             };
 
